@@ -1,3 +1,4 @@
+import { signIn } from "@/app/utils/auth";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
@@ -18,7 +19,11 @@ export function LoginForm(){
                     <CardDescription>Login with your Google or GitHub account.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                    <form>
+                    <form action={async () => {
+                        "use server"
+                        await signIn("github", {redirectTo:"/"})
+                        
+                    }}>
                         
                         <Button className="w-full" variant="outline" ><Github className="size-4" />Login with GitHub</Button>
                         
