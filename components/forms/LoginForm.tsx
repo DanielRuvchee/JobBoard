@@ -28,8 +28,10 @@ export function LoginForm(){
                         <Button className="w-full" variant="outline"><Google className="size-4" />Login with Google</Button>
                     </form>
                 </CardContent>
-                
             </Card>
+            <div className="text-xs text-center text-muted-foreground text-balance">
+                    By clicking continue you agree to our Terms of Service and Privacy Policy
+            </div>
         </div>
     )
 }
