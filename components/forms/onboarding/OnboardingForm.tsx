@@ -1,7 +1,9 @@
+"use client"
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+import { UserTypeSelection } from "./UserTypeForm";
 
 type UserSelectionType = "jobSeeker" | "company" | null
 
@@ -14,10 +16,10 @@ export function OnboardingForm() {
         setStep(2)
     }
 
-    functio renderStep() {
+    function renderStep() {
         switch (step) {
             case 1:
-                return <p>User type selection form</p>
+                return <UserTypeSelection />
             case 2:
                 return userType === "company" ? <p>Company form</p> : <p>Job seeker form</p>
             
@@ -33,8 +35,8 @@ export function OnboardingForm() {
         </div>
 
         <Card className="max-w-lg w-full">
-            <CardContent>
-
+            <CardContent className="p-6">
+                {renderStep()}
             </CardContent>
         </Card>
         </>
