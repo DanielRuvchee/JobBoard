@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { countryList } from "@/app/utils/countryList"
 import { Textarea } from "@/components/ui/textarea"
+import { UploadDropzone } from "@/components/general/UploadThingsReexported"
 
 
 export function CompanyForm() {
@@ -102,6 +103,28 @@ export function CompanyForm() {
                             <FormLabel>About</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Tell us about your company" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+                        </FormField>
+
+                        <FormField control={form.control} name="logo"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Company Logo</FormLabel>
+                            <FormControl>
+                                <UploadDropzone endpoint="imageUploader"
+                                onClientUploadComplete={(res) => {
+                                    if (res && res[0]?.url) {
+                                        field.onChange(res[0].url);
+                                    }
+                                }}
+                                onUploadError={(error: Error) => {
+                                    console.error("Upload error:", error);
+                                }}
+                                className="ut-button:bg-primary ut-button:text-white ut-button:hover:bg-primary/90 ut-label:text-muted-foreground ut-allowed-content:text-muted-foreground border-primary"
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
