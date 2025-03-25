@@ -6,6 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { countryList } from "@/app/utils/countryList"
+import { Textarea } from "@/components/ui/textarea"
 
 
 export function CompanyForm() {
@@ -67,9 +68,45 @@ export function CompanyForm() {
                             <FormMessage />
                         </FormItem>
                     )}></FormField>
-                        
                     
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField control={form.control} name="website"
+                    render={( field ) => (
+                        <FormItem>
+                            <FormLabel>Website</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://www.example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+                        </FormField>
+
+                        <FormField control={form.control} name="xAccount"
+                    render={( field ) => (
+                        <FormItem>
+                            <FormLabel>X (Twitter) Account</FormLabel>
+                            <FormControl>
+                                <Input placeholder="@yourcompany" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+                        </FormField>
+                </div>
+
+                <FormField control={form.control} name="about"
+                    render={( field ) => (
+                        <FormItem>
+                            <FormLabel>About</FormLabel>
+                            <FormControl>
+                                <Textarea placeholder="Tell us about your company" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+                        </FormField>
             </form>
         </Form>
     )
