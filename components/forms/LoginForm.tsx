@@ -31,7 +31,7 @@ export async function LoginForm() {
                         <form action={async () => {
                             "use server";
                             await signIn("github", {
-                                 redirectTo: "/" 
+                                 redirectTo: "/onboarding" 
                                 });
                         }}>
                             {/* <Button className="w-full" variant="outline" ><Github className="size-4" />Login with GitHub</Button> */}
@@ -43,7 +43,7 @@ export async function LoginForm() {
                         <form action={async () => {
                             "use server";
                             await signIn("google", {
-                                redirectTo: "/"
+                                redirectTo: "/onboarding"
                             })
                         }}>
                             {/* <Button className="w-full" variant="outline"><Google className="size-4" />Login with Google</Button> */}

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { UserTypeSelection } from "./UserTypeForm";
 import { CompanyForm } from "./CompanyForm";
-
+import { JobSeekerForm } from "./JobSeekerForm";
 type UserSelectionType = "jobSeeker" | "company" | null
 
 export function OnboardingForm() {
@@ -24,7 +24,7 @@ export function OnboardingForm() {
             case 2:
                 return userType === "company" ? (
                 <CompanyForm />)
-                 : (<p>Job seeker form</p>)
+                 : (<JobSeekerForm />)
             
             default:
                 return null
