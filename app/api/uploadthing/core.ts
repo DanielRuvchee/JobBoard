@@ -21,19 +21,25 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async () => {
       // This code runs on your server before upload
-      const session = await requireUser();
-
-      // If you throw, the user will not be able to upload
-      if (!session) throw new UploadThingError("Unauthorized");
-
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: session.id };
+      try {
+        const session = await auth();
+        
+        if (!session?.user) {
+          throw new UploadThingError("Unauthorized - please log in");
+        }
+        
+        // Whatever is returned here is accessible in onUploadComplete as `metadata`
+        return { userId: session.user.id };
+      } catch (error) {
+        console.error("UploadThing middleware error:", error);
+        throw new UploadThingError("Authentication failed");
+      }
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       console.log("Upload complete for userId:", metadata.userId);
 
-      console.log("file url", file.ufsUrl);
+      console.log("file url", file.url);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
