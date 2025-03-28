@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { countryList } from "@/app/utils/countryList";
+import { SalaryRangeSelector } from "../general/SalaryRangeSelector";
 
 
 
@@ -123,6 +124,13 @@ export function CreateJobForm() {
                                 </FormItem>  
                              )}
                             />
+
+                            <FormItem>
+                                <FormLabel>Salary Range</FormLabel>
+                                <FormControl>
+                                    <SalaryRangeSelector control={form.control} minSalary={10000} maxSalary={1000000} step={2000} currency="USD" />
+                                </FormControl>
+                            </FormItem>
                         </div>
                     </CardContent>
                 </Card>
