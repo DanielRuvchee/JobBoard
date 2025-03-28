@@ -44,6 +44,33 @@ export const ourFileRouter = {
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
     }),
+
+    resumeUploader: f({
+      pdf: {
+        maxFileSize: "5MB",
+        maxFileCount: 1,
+      },
+    })
+      .middleware(async () => {
+        try {
+          const session = await auth();
+          
+          if (!session?.user) {
+            throw new UploadThingError("Unauthorized - please log in");
+          }
+          
+          return { userId: session.user.id };
+        } catch (error) {
+          console.error("Resume upload middleware error:", error);
+          throw new UploadThingError("Authentication failed");
+        }
+      })
+      .onUploadComplete(async ({ metadata, file }) => {
+        console.log("Resume upload complete for userId:", metadata.userId);
+        console.log("Resume file url:", file.url);
+        
+        return { uploadedBy: metadata.userId, url: file.url };
+      }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
