@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
+import { countryList } from "@/app/utils/countryList";
 
 
 
@@ -77,6 +78,44 @@ export function CreateJobForm() {
                                                 <SelectItem value="part-time">Part-Time</SelectItem>
                                                 <SelectItem value="internship">Internship</SelectItem>
                                                 <SelectItem value="contractor">Contractor</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>  
+                             )}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                             control={form.control} 
+                             name="location"
+                             render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Select Job Location</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Job Location" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Worldwide</SelectLabel>
+                                                <SelectItem value="worldwide">
+                                                    <span>🌍</span>
+                                                    <span className="pl-2">Worldwide / Remote</span>
+                                                </SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>Location</SelectLabel>
+                                                {countryList.map((country) => (
+                                                    <SelectItem key={country.code} value={country.code}>
+                                                        <span>{country.flagEmoji}</span>
+                                                        <span className="pl-2">{country.name}</span>
+                                                    </SelectItem>
+                                                ))}
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
