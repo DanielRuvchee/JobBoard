@@ -5,6 +5,20 @@ import { z } from "zod"
 import { companySchema, jobSeekerSchema } from "./utils/zodSchemas"
 import { prisma } from "./utils/db"
 import { redirect } from "next/navigation"
+import arcjet from "./utils/arcjet"
+
+
+const aj = arcjet.withRule(
+    shield({
+        mode: 'LIVE',
+
+    })
+).withRule(
+    detectBot({
+        mode: 'LIVE',
+        allow: [],
+    })
+)
 
 export async function createCompany(data: z.infer<typeof companySchema>) {
     const session =  await requireUser()
