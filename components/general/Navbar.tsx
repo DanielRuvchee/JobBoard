@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./Themetoggle";
 import { auth, signOut } from "@/app/utils/auth";
-
+import { UserDropdown } from "./UserDropdown";
 export default async function Navbar() {
     const session = await auth();
     return (
@@ -16,19 +16,21 @@ export default async function Navbar() {
                 </h1>
             </Link>
 
-            <div className="flex items-center gap-4">
-            <ThemeToggle />
-            {session?.user ? (
-                <form
-                 action={async () => {
-                    "use server";
-                    await signOut({redirectTo: "/"});
-                 }}><Button>Logout</Button></form>
-            ) : (
-                <Link href="/login" className={buttonVariants({variant: "outline", size: "lg"})}>
-                    Login
+            {/*Desktop Navbar */}
+            <div className="hidden md:flex gap-4 items-center ">
+                <ThemeToggle />
+                <Link href="/post-job" className={buttonVariants({size: "lg"})}>
+                    Post Job
                 </Link>
-            )}
+
+                {session?.user ? (
+                    <UserDropdown />
+                ) : (
+                    <Link href="/login" className={buttonVariants({variant: "outline", size: "lg"})}>
+                        Login
+                    </Link>
+                )}
+
             </div>
             
         </nav>
