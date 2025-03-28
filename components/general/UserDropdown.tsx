@@ -1,9 +1,12 @@
+"use client"
+
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuSeparator } from "../ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { ChevronDown, Heart, Layers2, LogOut } from "lucide-react"
 import Link from "next/link"
-import { signOut } from "@/app/utils/auth"
+import { logoutAction } from "@/app/actions/auth-actions"
+import { useTransition } from "react"
 
 interface iAppProps {
     email: string;
@@ -12,12 +15,21 @@ interface iAppProps {
 }
 
 export function UserDropdown({email, name, image}: iAppProps) {
+    // Use transition to handle pending state during form submission
+    const [isPending, startTransition] = useTransition()
+
+    const handleLogout = () => {
+        startTransition(async () => {
+            await logoutAction()
+        })
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
                     <Avatar>
-                        <AvatarImage src={image} />
+                        <AvatarImage src={image} alt={`${name}'s profile`} />
                         <AvatarFallback>
                             {name.charAt(0)}
                         </AvatarFallback>
@@ -28,7 +40,7 @@ export function UserDropdown({email, name, image}: iAppProps) {
             </DropdownMenuTrigger>
 
             
-            <DropdownMenuContent className="w-48 align-end">
+            <DropdownMenuContent className="w-48" align="end">
                 <DropdownMenuLabel className="flex flex-col gap-1">
                     <span className="font-medium text-sm text-foreground">{name}</span>
                     <span className="text-xs text-muted-foreground">{email}</span>
@@ -50,17 +62,14 @@ export function UserDropdown({email, name, image}: iAppProps) {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <form
-                        action={async () => {
-                            "use server";
-                            await signOut({ redirectTo: "/" });
-                        }}
+                    <button 
+                        onClick={handleLogout}
+                        disabled={isPending}
+                        className="w-full flex items-center gap-2 cursor-pointer"
                     >
-                        <button type="submit" className="w-full flex items-center gap-2">
-                            <LogOut size={16} strokeWidth={2} className="opacity-60" />
-                            <span>Log Out</span>
-                        </button>
-                    </form>
+                        <LogOut size={16} strokeWidth={2} className="opacity-60" />
+                        <span>{isPending ? "Logging out..." : "Log Out"}</span>
+                    </button>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
