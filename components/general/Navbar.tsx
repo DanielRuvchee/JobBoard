@@ -5,18 +5,20 @@ import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./Themetoggle";
 import { auth, signOut } from "@/app/utils/auth";
 import { UserDropdown } from "./UserDropdown";
+
 export default async function Navbar() {
     const session = await auth();
+    
     return (
         <nav className="flex items-center justify-between py-5">
             <Link href="/" className="flex items-center gap-2">
-            <Image src={Logo} width={40} height={40} alt="logo"></Image>
+                <Image src={Logo} width={40} height={40} alt="logo" className="rounded-md" />
                 <h1 className="text-2xl font-bold">
                     Job<span className="text-primary">Daniel</span>
                 </h1>
             </Link>
 
-            {/*Desktop Navbar */}
+            {/* Desktop Navbar */}
             <div className="hidden md:flex gap-4 items-center ">
                 <ThemeToggle />
                 <Link href="/post-job" className={buttonVariants({size: "lg"})}>
@@ -24,15 +26,13 @@ export default async function Navbar() {
                 </Link>
 
                 {session?.user ? (
-                    <UserDropdown />
+                    <UserDropdown email={session.user.email as string} name={session.user.name as string} image={session.user.image as string} />
                 ) : (
                     <Link href="/login" className={buttonVariants({variant: "outline", size: "lg"})}>
                         Login
                     </Link>
                 )}
-
             </div>
-            
         </nav>
     )
 }
