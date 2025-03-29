@@ -15,6 +15,7 @@ export function BenefitsSelector({ field }: iAppProps) {
         field.onChange(newBenefits)
     }
     return (
+        <div className="">
         <div className="flex flex-wrap gap-3">
             {benefits.map((benefit) => {
                 const isSelected = (field.value || []).includes(benefit.id)
@@ -27,6 +28,11 @@ export function BenefitsSelector({ field }: iAppProps) {
                 </Badge>
                 )
             })}
+        </div>
+
+        <div className="mt-4 text-sm text-muted-foreground">
+            Selected benefits: <span className="text-primary">{(field.value || []).length }</span>
+        </div>
         </div>
     )
 }
