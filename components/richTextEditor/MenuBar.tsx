@@ -1,8 +1,9 @@
 import { Editor } from "@tiptap/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { Toggle } from "../ui/toggle"
-import { Bold, Heading1, Heading2, Heading3, Italic, ListIcon, ListOrderedIcon, Strikethrough } from "lucide-react"
+import { AlignCenter, AlignLeft, AlignRight, Bold, Heading1, Heading2, Heading3, Italic, ListIcon, ListOrderedIcon, Redo, Strikethrough, Undo } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "../ui/button"
 interface iAppProps {
     editor: Editor | null
 }
@@ -106,6 +107,70 @@ export function MenuBar({ editor }: iAppProps) {
                             </Toggle>
                         </TooltipTrigger>
                         <TooltipContent>Ordered List</TooltipContent>
+                    </Tooltip>
+                </div>
+
+                <div className="w-px h-6 bg-border mx-2">
+
+                </div>
+
+                <div className="flex flex-wrap gap1">
+                <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Toggle size="sm" pressed={editor.isActive({ textAlign: "left" })} onPressedChange={() => editor.chain().focus().setTextAlign("left").run()} 
+                                className={cn(
+                                    editor.isActive({ textAlign: "left" }) && "bg-muted text-muted-foreground"
+                                )}>
+                                <AlignLeft className="w-4 h-4" />
+                            </Toggle>
+                        </TooltipTrigger>
+                        <TooltipContent>Align Left</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Toggle size="sm" pressed={editor.isActive({ textAlign: "center" })} onPressedChange={() => editor.chain().focus().setTextAlign("center").run()} 
+                                className={cn(
+                                    editor.isActive({ textAlign: "center" }) && "bg-muted text-muted-foreground"
+                                )}>
+                                <AlignCenter className="w-4 h-4" />
+                            </Toggle>
+                        </TooltipTrigger>
+                        <TooltipContent>Align Center</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Toggle size="sm" pressed={editor.isActive({ textAlign: "right" })} onPressedChange={() => editor.chain().focus().setTextAlign("right").run()} 
+                                className={cn(
+                                    editor.isActive({ textAlign: "right" }) && "bg-muted text-muted-foreground"
+                                )}>
+                                <AlignRight className="w-4 h-4" />
+                            </Toggle>
+                        </TooltipTrigger>
+                        <TooltipContent>Align Right</TooltipContent>
+                    </Tooltip>
+                </div>
+
+                <div className="w-px h-6 bg-border mx-2"></div>
+
+                <div className="flex flex-wrap gap-1">
+                <Tooltip>
+                        <TooltipTrigger asChild>
+                                <Button size="sm" variant="ghost" type="button" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} >
+                                <Undo className="w-4 h-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Undo</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                                <Button size="sm" variant="ghost" type="button" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} >
+                                <Redo className="w-4 h-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Redo</TooltipContent>
                     </Tooltip>
                 </div>
             </TooltipProvider>
