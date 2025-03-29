@@ -45,7 +45,7 @@ export function CreateJobForm() {
                             Job Information
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <FormField
                              control={form.control} 
@@ -65,11 +65,11 @@ export function CreateJobForm() {
                              control={form.control} 
                              name="employmentType"
                              render={({field}) => (
-                                <FormItem>
+                                <FormItem className="w-full">
                                     <FormLabel>Employment Type</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select Employment Type" />
                                             </SelectTrigger>
                                         </FormControl>
@@ -94,11 +94,11 @@ export function CreateJobForm() {
                              control={form.control} 
                              name="location"
                              render={({field}) => (
-                                <FormItem>
+                                <FormItem className="w-full">
                                     <FormLabel>Select Job Location</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Job Location" />
                                             </SelectTrigger>
                                         </FormControl>
@@ -136,7 +136,7 @@ export function CreateJobForm() {
                         <FormField 
                             control={form.control}
                             name="jobDescription"
-                            render={( field ) => (
+                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Job Description</FormLabel>
                                     <FormControl>
