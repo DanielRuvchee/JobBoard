@@ -61,5 +61,5 @@ module.exports = withUt({
       },
     },
   },
-  plugins: [],
-} )
+  plugins: [require('@tailwindcss/typography')],
+} ) 
