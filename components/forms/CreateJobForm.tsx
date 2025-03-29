@@ -1,6 +1,6 @@
 "use client"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Form, FormControl , FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { jobSchema } from "@/app/utils/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { countryList } from "@/app/utils/countryList";
 import { SalaryRangeSelector } from "../general/SalaryRangeSelector";
 import { JobDescriptionEditor } from "../richTextEditor/JobDescriptionEditor";
+import { BenefitsSelector } from "../general/BenefitsSelector";
 
 
 
@@ -140,7 +141,20 @@ export function CreateJobForm() {
                                 <FormItem>
                                     <FormLabel>Job Description</FormLabel>
                                     <FormControl>
-                                        <JobDescriptionEditor />
+                                        <JobDescriptionEditor field={field as any} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="benefits"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Benefits</FormLabel>
+                                    <FormControl>
+                                        <BenefitsSelector field={field as any} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
