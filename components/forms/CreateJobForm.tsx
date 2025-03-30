@@ -12,6 +12,11 @@ import { countryList } from "@/app/utils/countryList";
 import { SalaryRangeSelector } from "../general/SalaryRangeSelector";
 import { JobDescriptionEditor } from "../richTextEditor/JobDescriptionEditor";
 import { BenefitsSelector } from "../general/BenefitsSelector";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
+import { XIcon } from "lucide-react";
+import { UploadDropzone } from "../general/UploadThingsReexported";
+import Image from "next/image";
 
 
 
@@ -167,7 +172,7 @@ export function CreateJobForm() {
                     <CardHeader>
                         <CardTitle>Company Information</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <FormField
                                 control={form.control}
@@ -221,7 +226,7 @@ export function CreateJobForm() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <FormField
+                    <FormField
                                 control={form.control}
                                 name="companyWebsite"
                                 render={({field}) => (
@@ -235,7 +240,7 @@ export function CreateJobForm() {
                                 )}
                             />
 
-                        <FormField
+                    <FormField
                                 control={form.control}
                                 name="companyXAccount"
                                 render={({field}) => (
@@ -248,7 +253,61 @@ export function CreateJobForm() {
                                     </FormItem>
                                 )}
                             />
+
+    
                         </div>
+
+                        <FormField
+                                control={form.control}
+                                name="companyAbout"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Company Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea placeholder="Say something about your company" {...field} className="min-h-[120px]"/>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+            <FormField
+                    control={form.control}
+                    name="companyLogo"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Company Logo</FormLabel>
+                            <FormControl>
+                                <div>
+                                    {field.value ? (
+                                        <div className="relative w-fit">
+                                            <Image  src={field.value} alt="Company Logo" width={100} height={100} className="rounded-lg" />
+                                            <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2"
+                                            onClick={() => field.onChange("")}>
+                                                <XIcon className="size-4"/>
+                                            </Button>
+                                            
+                                        </div>
+                                    ): (
+                                        <UploadDropzone endpoint="imageUploader"
+                                onClientUploadComplete={(res) => {
+                                    if (res && res[0]?.url) {
+                                        field.onChange(res[0].url);
+                                    }
+                                }}
+                                onUploadError={(error: Error) => {
+                                    console.error("Upload error:", error);
+                                }}
+                                className="ut-button:bg-primary ut-button:text-white ut-button:hover:bg-primary/90 ut-label:text-muted-foreground ut-allowed-content:text-muted-foreground border-primary"
+                                />
+                                    )}
+
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                     </CardContent>
                 </Card>
             </form>
