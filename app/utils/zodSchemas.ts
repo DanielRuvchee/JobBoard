@@ -22,7 +22,7 @@ export const jobSchema = z.object ({
     salaryFrom: z.number().min(1, "Salary from is required"),
     salaryTo: z.number().min(1, "Salary to is required"),
     jobDescription: z.string().min(1, "Job description is required"),
-    listingDuration: z.string().min(1, "Listing duration is required"),
+    listingDuration: z.number().min(1, "Listing duration is required"),
     benefits: z.array(z.string()).min(1, "At least one benefit is required"),
 
     companyName: z.string().min(1, "Company name is required"),

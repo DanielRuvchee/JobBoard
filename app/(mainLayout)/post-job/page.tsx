@@ -1,8 +1,11 @@
+import { prisma } from "@/app/utils/db";
+import { requireUser } from "@/app/utils/requireUser";
 import { CreateJobForm } from "@/components/forms/CreateJobForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import arcjetLogo from "@/public/arcjet.jpg";
 import inngestLogo from "@/public/inngest-locale.png";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const companies = [
     {
@@ -51,14 +54,36 @@ const stats = [
     {id: 1, value: "48h", label: "Average Time to Hire"},
     {id: 2, value: "95%", label: "Employer Satisfaction"},
     {id: 3, value: "500+", label: "Companies Using Us"},
-   
-    
 ]
 
-export default function PostJobPage() {
+async function getCompany(userId: string) {
+    const data = await prisma.company.findUnique({
+        where: {
+            userId: userId,
+        },
+        select: {
+            name: true,
+            location: true,
+            logo: true,
+            about: true,
+            xAccount: true,
+            website: true,
+        }
+    })
+
+    if (!data) {
+        return redirect("/");
+    }
+
+    return data;
+}
+
+export default async function PostJobPage() {
+    const session = await requireUser()
+    const data = await getCompany(session.id as string);
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 mt-5 gap-4">
-            <CreateJobForm />
+            <CreateJobForm companyLocation={data.location} companyName={data.name} companyAbout={data.about} companyLogo={data.logo} companyWebsite={data.website} companyXAccount={data.xAccount} />
 
             <div className="col-span-1 ">
                 <Card>

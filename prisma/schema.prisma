@@ -116,7 +116,7 @@ model JobPost {
   salaryFrom Int
   salaryTo Int
   jobDescription String
-  listingDuration String
+  listingDuration Int
   benefits String[]
 
   company Company @relation(fields: [companyId], references: [id])
