@@ -17,6 +17,7 @@ import { Button } from "../ui/button";
 import { XIcon } from "lucide-react";
 import { UploadDropzone } from "../general/UploadThingsReexported";
 import Image from "next/image";
+import { JobListingDuration } from "../general/JobListingDurationSelector";
 
 
 
@@ -308,6 +309,26 @@ export function CreateJobForm() {
                         </FormItem>
                     )}
                 />
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Job Listing Duaration</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <FormField
+                            control={form.control}
+                            name="listingDuration"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <JobListingDuration field={field as any} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
             </form>
