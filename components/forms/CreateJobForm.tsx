@@ -162,6 +162,95 @@ export function CreateJobForm() {
                         />
                     </CardContent>
                 </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Company Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                                control={form.control}
+                                name="companyName"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Company Name</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Company Name" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                    <FormField
+                             control={form.control} 
+                             name="companyLocation"
+                             render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Select Company Location</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Company Location" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Worldwide</SelectLabel>
+                                                <SelectItem value="worldwide">
+                                                    <span>🌍</span>
+                                                    <span className="pl-2">Worldwide / Remote</span>
+                                                </SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>Location</SelectLabel>
+                                                {countryList.map((country) => (
+                                                    <SelectItem key={country.code} value={country.code}>
+                                                        <span>{country.flagEmoji}</span>
+                                                        <span className="pl-2">{country.name}</span>
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>  
+                             )}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <FormField
+                                control={form.control}
+                                name="companyWebsite"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Company Website</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Company Website" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                        <FormField
+                                control={form.control}
+                                name="companyXAccount"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Company X Account</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="@Company X Account" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
             </form>
         </Form>
     )
