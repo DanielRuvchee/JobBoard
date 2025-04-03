@@ -58,25 +58,21 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
     setPending(true);
     setError(null);
     try {
-      console.log("Submitting values:", values);
-      // The createJob function will handle the redirect
-      const result = await createJob(values);
+      await createJob(values);
       
-      // If we get here, it means the redirect didn't happen
-      // We can manually redirect the user
+      // This might not run if redirect happens from server action
       window.location.href = "/";
     } catch (error) {
-      // In Next.js, redirect() throws a NEXT_REDIRECT error which is expected
+      // Check if this is a redirect - that means success!
       if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
-        console.log("Redirect happening...");
         // The redirect is being handled by Next.js, no need to do anything
         return;
       }
       
       // Handle other errors
-      console.error("Error creating job:", error);
       setError(error instanceof Error ? error.message : "Failed to create job. Please try again.");
-      console.error("Full error:", error);
+    } finally {
+      // Always reset pending state whether there's an error or redirect
       setPending(false);
     }
   }

@@ -8,6 +8,8 @@ import { redirect } from "next/navigation"
 import arcjet from "./utils/arcjet"
 import { request } from "@arcjet/next"
 import { shield, detectBot } from "@arcjet/next"
+import { stripe } from "./utils/stripe"
+import { jobListingDurationPricing } from "./utils/JobListinDurationPricing"
 
 const aj = arcjet.withRule(
     shield({
@@ -86,7 +88,6 @@ export async function createJobSeeker(data: z.infer<typeof jobSeekerSchema>) {
 export async function createJob(data: z.infer<typeof jobSchema>) {
     try {
         const user = await requireUser()
-        console.log("User found:", user.id);
 
         const req = await request()
         const decision = await aj.protect(req)
@@ -95,27 +96,47 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
             throw new Error("Forbidden")
         }
 
-        console.log("Validating data with Zod schema");
         const validateData = jobSchema.parse(data)
-        console.log("Data validated successfully");
 
-        console.log("Finding company for user");
         const company = await prisma.company.findUnique({
             where:{
                 userId: user.id
             },
             select: {
                 id: true,
+                user: {
+                    select: {
+                        stripeCustomerId: true
+                    }
+                }
             }
         })
-        console.log("Company found:", company);
 
         if (!company?.id) {
-            console.log("No company found for user, redirecting");
-            redirect("/")
+            return redirect("/")
         }
 
-        console.log("Creating job post");
+        let stripeCustomerId = company.user.stripeCustomerId
+
+        if(!stripeCustomerId) {
+            const customer = await stripe.customers.create({
+                email: user.email as string,
+                name: user.name as string
+            })
+
+            stripeCustomerId = customer.id
+
+            //update user with stripeCustomerId
+            await prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    stripeCustomerId: customer.id
+                }
+            })
+        }
+
         await prisma.jobPost.create({
             data: {
                 jobDescription: validateData.jobDescription,
@@ -130,9 +151,43 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
                 status: "ACTIVE"
             }
         })
-        console.log("Job post created successfully");
 
-        redirect("/")
+        const pricingTier = jobListingDurationPricing.find(
+            (tier) => tier.days === validateData.listingDuration
+        )
+
+        if(!pricingTier) {
+            throw new Error("Invalid listing duration selected")
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            customer: stripeCustomerId,
+            line_items: [
+                {
+                    price_data: {
+                        product_data: {
+                            name: `Job Posting - ${pricingTier.days} Days`,
+                            description: pricingTier.description,
+                            images: [
+                                "https://r87auogaak.ufs.sh/f/e3EtAtSZyN2CkNwNBXEo2crCt0T5WFqX1nL4jdRJy8wu9Ehz"
+                            ]
+                        },
+                        currency: "usd",
+                        unit_amount: pricingTier.price * 100,
+                    },
+                    quantity: 1
+                }
+            ],
+
+
+
+            mode: "payment",
+            success_url: `${process.env.NEXT_PUBLIC_URL}/payment/success`,
+            cancel_url: `${process.env.NEXT_PUBLIC_URL}/payment/cancel`,
+        })
+
+        return redirect(session.url as string)
+        
     } catch (error) {
         console.error("Server error in createJob:", error);
         throw error;
