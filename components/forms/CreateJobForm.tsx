@@ -52,15 +52,31 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
   });
 
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(values: z.infer<typeof jobSchema>) {
+    setPending(true);
+    setError(null);
     try {
-      await createJob(values);
+      console.log("Submitting values:", values);
+      // The createJob function will handle the redirect
+      const result = await createJob(values);
+      
+      // If we get here, it means the redirect didn't happen
+      // We can manually redirect the user
+      window.location.href = "/";
     } catch (error) {
-      if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
-        console.log("Something went wrong");
+      // In Next.js, redirect() throws a NEXT_REDIRECT error which is expected
+      if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+        console.log("Redirect happening...");
+        // The redirect is being handled by Next.js, no need to do anything
+        return;
       }
-    } finally {
+      
+      // Handle other errors
+      console.error("Error creating job:", error);
+      setError(error instanceof Error ? error.message : "Failed to create job. Please try again.");
+      console.error("Full error:", error);
       setPending(false);
     }
   }
@@ -68,6 +84,11 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="col-span-1 lg:col-span-2 flex flex-col gap-8">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>Job Information</CardTitle>
@@ -77,42 +98,48 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
               <FormField
                 control={form.control}
                 name="jobTitle"
-                render={({field}) => (
+                render={({field}) => {
+                  const formId = `form-field-${field.name}`;
+                  return (
                   <FormItem>
-                    <FormLabel>Job Title</FormLabel>
+                    <FormLabel htmlFor={formId}>Job Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Job Title" {...field} />
+                      <Input id={formId} placeholder="Job Title" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
+                  );
+                }}
               />
 
               <FormField
                 control={form.control}
                 name="employmentType"
-                render={({field}) => (
+                render={({field}) => {
+                  const formId = `form-field-${field.name}`;
+                  return (
                   <FormItem className="w-full">
-                    <FormLabel>Employment Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
+                    <FormLabel htmlFor={formId}>Employment Type</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger id={formId} className="w-full">
                           <SelectValue placeholder="Select Employment Type" />
                         </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Employment Type</SelectLabel>
-                          <SelectItem value="full-time">Full-Time</SelectItem>
-                          <SelectItem value="part-time">Part-Time</SelectItem>
-                          <SelectItem value="internship">Internship</SelectItem>
-                          <SelectItem value="contractor">Contractor</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Employment Type</SelectLabel>
+                            <SelectItem value="full-time">Full-Time</SelectItem>
+                            <SelectItem value="part-time">Part-Time</SelectItem>
+                            <SelectItem value="internship">Internship</SelectItem>
+                            <SelectItem value="contractor">Contractor</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
+                  );
+                }}
               />
             </div>
 
@@ -120,37 +147,40 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
               <FormField
                 control={form.control}
                 name="location"
-                render={({field}) => (
+                render={({field}) => {
+                  const formId = `form-field-${field.name}`;
+                  return (
                   <FormItem className="w-full">
-                    <FormLabel>Select Job Location</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
+                    <FormLabel htmlFor={formId}>Select Job Location</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger id={formId} className="w-full">
                           <SelectValue placeholder="Job Location" />
                         </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Worldwide</SelectLabel>
-                          <SelectItem value="worldwide">
-                            <span>🌍</span>
-                            <span className="pl-2">Worldwide / Remote</span>
-                          </SelectItem>
-                        </SelectGroup>
-                        <SelectGroup>
-                          <SelectLabel>Location</SelectLabel>
-                          {countryList.map((country) => (
-                            <SelectItem key={country.code} value={country.code}>
-                              <span>{country.flagEmoji}</span>
-                              <span className="pl-2">{country.name}</span>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Worldwide</SelectLabel>
+                            <SelectItem value="worldwide">
+                              <span>🌍</span>
+                              <span className="pl-2">Worldwide / Remote</span>
                             </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                          </SelectGroup>
+                          <SelectGroup>
+                            <SelectLabel>Location</SelectLabel>
+                            {countryList.map((country) => (
+                              <SelectItem key={country.code} value={country.code}>
+                                <span>{country.flagEmoji}</span>
+                                <span className="pl-2">{country.name}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
+                  );
+                }}
               />
 
               <FormItem>
@@ -300,7 +330,14 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
                     <div>
                       {field.value ? (
                         <div className="relative w-fit">
-                          <Image src={field.value} alt="Company Logo" width={100} height={100} className="rounded-lg" />
+                          <Image 
+                            src={field.value} 
+                            alt="Company Logo" 
+                            width={100} 
+                            height={100} 
+                            className="rounded-lg object-contain"
+                            style={{ width: '100px', height: 'auto' }} 
+                          />
                           <Button
                             type="button"
                             variant="destructive"
@@ -353,8 +390,18 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
           </CardContent>
         </Card>
 
-        <Button type="submit" className="w-full " disabled={pending}>
-          {pending ? "Submitting..." : "Create Job Post"}
+        <Button type="submit" className="w-full" disabled={pending}>
+          {pending ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Creating Job...
+            </>
+          ) : (
+            "Create Job"
+          )}
         </Button>
       </form>
     </Form>

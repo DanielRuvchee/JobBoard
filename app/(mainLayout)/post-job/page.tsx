@@ -99,7 +99,14 @@ export default async function PostJobPage() {
                         <div className="grid grid-cols-3 gap-4">
                             {companies.map((company) => (
                                 <div key={company.id}>
-                                    <Image src={company.logo} alt={company.name} width={80} height={80} className="rounded-lg opacity-75 transition-opacity hover:opacity-100" />
+                                    <Image 
+                                        src={company.logo} 
+                                        alt={company.name} 
+                                        width={80} 
+                                        height={80} 
+                                        className="rounded-lg opacity-75 transition-opacity hover:opacity-100 object-contain"
+                                        style={{ width: '80px', height: 'auto' }}
+                                    />
                                 </div>
                             ))}
                         </div>

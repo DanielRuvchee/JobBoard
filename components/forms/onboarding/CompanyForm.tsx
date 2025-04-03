@@ -153,7 +153,14 @@ export function CompanyForm() {
                                 <div>
                                     {field.value ? (
                                         <div className="relative w-fit">
-                                            <Image src={field.value} alt="Company Logo" width={100} height={100} className="rounded-lg" />
+                                            <Image 
+                                                src={field.value} 
+                                                alt="Company Logo" 
+                                                width={100} 
+                                                height={100} 
+                                                className="rounded-lg object-contain"
+                                                style={{ width: '100px', height: 'auto' }} 
+                                            />
                                             <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2"
                                             onClick={() => field.onChange("")}>
                                                 <XIcon className="size-4"/>
