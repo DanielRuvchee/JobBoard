@@ -10,6 +10,7 @@ import { request } from "@arcjet/next"
 import { shield, detectBot } from "@arcjet/next"
 import { stripe } from "./utils/stripe"
 import { jobListingDurationPricing } from "./utils/JobListinDurationPricing"
+import { inngest } from "./utils/inngest/client"
 
 const aj = arcjet.withRule(
     shield({
@@ -164,6 +165,14 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
             throw new Error("Invalid listing duration selected")
         }
 
+        await inngest.send({
+            name: "job/created",
+            data: {
+                jobId: jobpost.id,
+                expirationDays: validateData.listingDuration
+            }
+        })
+
         const session = await stripe.checkout.sessions.create({
             customer: stripeCustomerId,
             line_items: [
@@ -192,7 +201,12 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/payment/cancel`,
         })
 
-        return redirect(session.url as string)
+        if (session.url) {
+            return redirect(session.url)
+        }
+        
+        // Fallback if no session URL
+        return redirect("/")
 
     } catch (error) {
         console.error("Server error in createJob:", error);
