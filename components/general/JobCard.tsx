@@ -4,6 +4,7 @@ import {  MapIcon, MapPin, User2 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { formatCurrency } from "@/app/utils/formatCurrency";
+import { formatRelativeTime } from "@/app/utils/formatRelativeTime";
 
 interface iAppProps {
     job: {
@@ -55,8 +56,12 @@ export function JobCard({ job }: iAppProps) {
                                 <MapPin className="size-4 " />
                                 <h1>{job.location}</h1>
                             </div>
-                            <p>{job.createdAt.toLocaleDateString()}</p>
+                            <p className="text-sm text-muted-foreground md:text-right">{formatRelativeTime(job.createdAt)}</p>
                         </div>
+                    </div>
+
+                    <div>
+                        <p className="text-base text-muted-foreground line-clamp-2 !mt-5">{job.company.about}</p>
                     </div>
                 </CardHeader>
             </Card>
