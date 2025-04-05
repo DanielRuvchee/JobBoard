@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { JobFilter } from "@/components/general/JobFilters";
+import { JobListings } from "@/components/general/JobListings";
 import Image from "next/image";
 
 export default function Home() {
@@ -7,9 +8,9 @@ export default function Home() {
     <div className="grid grid-cols-3 gap-8">
       <JobFilter />
 
-      <Card className="col-span-2">
-        
-      </Card>
+      <div className="flex flex-col col-span-2 gap-6">
+        <JobListings />
+      </div>
     </div>
   );
 }
