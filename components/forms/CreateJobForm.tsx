@@ -55,31 +55,28 @@ export function CreateJobForm({companyLocation, companyName, companyAbout, compa
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(values: z.infer<typeof jobSchema>) {
-    if (pending) return; // Prevent double submissions
-    
     setPending(true);
     setError(null);
-    
     try {
-      // Try to call the server action
-      await createJob(values);
+      console.log("Submitting values:", values);
+      // The createJob function will handle the redirect
+      const result = await createJob(values);
       
-      // If we get here without a redirect, manually redirect
+      // If we get here, it means the redirect didn't happen
+      // We can manually redirect the user
       window.location.href = "/";
     } catch (error) {
-      // Handle redirect errors specially
-      if (error instanceof Error && 
-          (error.message.includes("NEXT_REDIRECT") || 
-           error.message.includes("redirect"))) {
-        // This is an expected flow - the server is redirecting us
-        console.log("Redirect in progress...");
+      // In Next.js, redirect() throws a NEXT_REDIRECT error which is expected
+      if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
+        console.log("Redirect happening...");
+        // The redirect is being handled by Next.js, no need to do anything
         return;
       }
       
-      // Any other error is unexpected
+      // Handle other errors
+      console.error("Error creating job:", error);
       setError(error instanceof Error ? error.message : "Failed to create job. Please try again.");
-    } finally {
-      // Always clean up the pending state
+      console.error("Full error:", error);
       setPending(false);
     }
   }
