@@ -1,3 +1,28 @@
+export function getFlagEmoji(location: string) {
+ 
+  if (!location || location === "worldwide") {
+    return "🌍";
+  }
+
+  const cleanLocation = location.trim().toLocaleLowerCase();
+
+
+  const countryByCode = countryList.find(
+    (country) => country.code.toLocaleLowerCase() === cleanLocation
+  );
+  
+  if (countryByCode) {
+    return countryByCode.flagEmoji;
+  }
+
+  
+  const countryByName = countryList.find(
+    (country) => cleanLocation.includes(country.name.toLocaleLowerCase())
+  );
+  
+  return countryByName?.flagEmoji || "";
+}
+
 export const countryList = [
     {
       name: "Afghanistan",
