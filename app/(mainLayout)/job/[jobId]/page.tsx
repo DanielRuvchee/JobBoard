@@ -5,9 +5,10 @@ import { benefits } from "@/app/utils/listOfBenefits";
 import { JsonToHtml } from "@/components/general/JsonToHtml";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "lucide-react";
-import { Span } from "next/dist/trace";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 async function getJob(jobId: string) {
@@ -23,6 +24,7 @@ async function getJob(jobId: string) {
             employmentType: true,
             benefits: true,
             createdAt: true,
+            listingDuration: true,
             company: {
                 select: {
                     name: true,
@@ -60,7 +62,7 @@ export  default async function JobIdPage({params}: {params: Params}) {
     }
 
     return (
-        <div className="grid lg:grid-cols-[1fr, 400px] gap-8">
+        <div className="grid lg:grid-cols-[1fr,400px] gap-8">
 
             <div className="space-y-8">
 
@@ -114,6 +116,61 @@ export  default async function JobIdPage({params}: {params: Params}) {
                         })}
                     </div>
                 </section>
+
+            </div>
+            <div className="space-y-6">
+                <Card className="p-6">
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="font-semibold">Apply Now</h3>
+                            <p className="text-sm text-muted-foreground mt-1">Please let {data.company.name} know you are interested in the role of {data.jobTitle}.</p>
+                        </div>
+
+                        <Button className="w-full" >
+                            Apply Now
+                        </Button>
+                    </div>
+                </Card>
+
+                {/* job details card */}
+                <Card className="p-6">
+                    <h3 className="font-semibold">About the Job</h3>
+
+                    <div className="space-y-2">
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground text-sm">Apply before</span>
+                            <span className="text-sm">{new Date(data.createdAt.getTime() + data.listingDuration * 24 * 60 * 60 * 1000).toLocaleDateString("en-US", {month: "long", day: "numeric", year: "numeric"})}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground text-sm">Posted on</span>
+                            <span className="text-sm">{data.createdAt.toLocaleDateString("en-US", {month: "long", day: "numeric", year: "numeric"})}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground text-sm">Employment Type</span>
+                            <span className="text-sm">{data.employmentType}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground text-sm">Location</span>
+                            <span className="text-sm">{locationFlag && <span className="mr-1">{locationFlag}</span>}
+                                {locationName}
+                            </span>
+                        </div>
+                    </div>
+                </Card>
+
+                {/* Company details card */} 
+                <Card className="p-6">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                            <Image src={data.company.logo} alt={data.company.name} width={48} height={48} className="rounded-full size-12" />
+                            <div className="flex flex-col">
+                                <h3 className="font-semibold">{data.company.name}</h3>
+                                <p className="text-sm text-muted-foreground align-clamp-3">{data.company.about}</p>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
             </div>
             
         </div>
