@@ -29,7 +29,7 @@ interface iAppProps {
 export function JobCard({ job }: iAppProps) {
     return (
         <Link href={`/job`}>
-            <Card>
+            <Card className="hover:shadow-lg transition-all duration-300 hover:border-primary">
                 <CardHeader>
                     <div className="flex flex-col md:flex-row gap-4">
                         <Image src={job.company.logo} alt={job.company.name} width={48} height={48}  className="size-12 rounded-lg"/>
@@ -51,8 +51,8 @@ export function JobCard({ job }: iAppProps) {
                             </div>
                         </div>
 
-                        <div className="md:ml-auto">
-                            <div className="flex items-center gap-2">
+                        <div className="md:ml-auto text-right">
+                            <div className="flex items-center gap-2 justify-end">
                                 <MapPin className="size-4 " />
                                 <h1>{job.location}</h1>
                             </div>
