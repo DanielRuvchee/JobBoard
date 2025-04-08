@@ -108,7 +108,7 @@ export default async  function MyJobsPage() {
                                                 <DropdownMenuItem asChild>
                                                     <Link href={`/my-jobs/${listing.id}/edit`}>
                                                         <PenBoxIcon />
-                                                        Edit
+                                                        Edit 
                                                     </Link>
                                                 </DropdownMenuItem>
 

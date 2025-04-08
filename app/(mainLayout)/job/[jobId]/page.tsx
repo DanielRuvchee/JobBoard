@@ -51,50 +51,54 @@ function getClient(session: boolean) {
 
 
 async function getJob(jobId: string, userId?: string) {
-
-    const [jobData, savedJob] = await Promise.all([
-        await prisma.jobPost.findUnique({
-          where: {
-            status: "ACTIVE",
-            id: jobId,
-          },
-          select: {
-            jobTitle: true,
-            jobDescription: true,
-            location: true,
-            employmentType: true,
-            benefits: true,
-            createdAt: true,
-            listingDuration: true,
-            company: {
-              select: {
-                name: true,
-                logo: true,
-                location: true,
-                about: true,
-              },
-            },
-          },
-        }),
-    
-        userId
-          ? prisma.savedJobPost.findFirst({
+    try {
+        const [jobData, savedJob] = await Promise.all([
+            await prisma.jobPost.findUnique({
               where: {
-                userId: userId,
-                jobPostId: jobId,
+                status: "ACTIVE",
+                id: jobId,
               },
               select: {
-                id: true,
+                jobTitle: true,
+                jobDescription: true,
+                location: true,
+                employmentType: true,
+                benefits: true,
+                createdAt: true,
+                listingDuration: true,
+                company: {
+                  select: {
+                    name: true,
+                    logo: true,
+                    location: true,
+                    about: true,
+                  },
+                },
               },
-            })
-          : null,
-      ]);
+            }),
+        
+            userId
+              ? prisma.savedJobPost.findFirst({
+                  where: {
+                    userId: userId,
+                    jobPostId: jobId,
+                  },
+                  select: {
+                    id: true,
+                  },
+                })
+              : null,
+          ]);
 
-    if(!jobData) {
-        return notFound()
+        if(!jobData) {
+            return notFound()
+        }
+
+        return {jobData, savedJob}
+    } catch (error) {
+        console.error('Error fetching job data:', error);
+        return notFound();
     }
-
-    return {jobData, savedJob}
 }
 
 type Params = Promise<{jobId: string}>
